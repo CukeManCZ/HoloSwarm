@@ -1,0 +1,6 @@
+plugin:
+  gnss:
+    utm_zone: "33U"
+    utm_x: 446289.6
+    utm_y: 5467963.53
+    amsl: 340.0
