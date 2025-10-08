@@ -147,6 +147,30 @@ namespace single_uav
     auto request = std::make_shared<mrs_msgs::srv::ReferenceStampedSrv::Request>();
     request->reference = ref.reference;
     request->header = ref.header;
+
+    if(request->header.frame_id == "/uav1/utm_origin"){
+      try{
+       geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform("uav1/world_origin", "uav1/utm_origin", tf2::TimePointZero);
+  
+        geometry_msgs::msg::PoseStamped pose_in, pose_out;
+        pose_in.header = request->header;
+        pose_in.pose.position = request->reference.position;
+
+        tf2::doTransform(pose_in, pose_out, transformStamped);
+
+        request->header.stamp = this->now();
+        request->header.frame_id = "uav1/world_origin";
+        request->reference.position = pose_out.pose.position;
+        RCLCPP_INFO(get_logger(), "Sended reference transformed");
+      }
+    catch (const tf2::TransformException& ex ){
+      RCLCPP_WARN(node_->get_logger(), "Transform failed in setting reference: %s", ex.what());
+      }
+
+      RCLCPP_INFO_STREAM(get_logger(), "Pos: X:" << request->reference.position.x << "Y:" << request->reference.position.y << "Z:" << request->reference.position.z);
+    }
+    
+
     if(cli_sendRef_->service_is_ready())
     {
       cli_sendRef_->async_send_request(request, [&](const rclcpp::Client<mrs_msgs::srv::ReferenceStampedSrv>::SharedFuture fut)
@@ -179,7 +203,7 @@ namespace single_uav
 
     auto request = std::make_shared<mrs_msgs::srv::PathSrv::Request>();
     request->path = path;
-    
+
     if(cli_sendTrajectory_->service_is_ready())
     {
       cli_sendTrajectory_->async_send_request(request, [&](const rclcpp::Client<mrs_msgs::srv::PathSrv>::SharedFuture fut)
@@ -413,25 +437,64 @@ namespace single_uav
       return true;
   }
 
+  
   mrs_msgs::msg::Path SingleUAV::GetPathFromWaypoints(const mrs_msgs::msg::ReferenceArray wayp)
   {
     mrs_msgs::msg::Path path;
     std_msgs::msg::Header header;
-    ///< uav_name/estimation_manager/uav_state
+
     header.frame_id = "";
-    // header.stamp = node_->ti
     path.use_heading = false;
     path.fly_now = true;
     path.stop_at_waypoints = false;
     path.loop = false;
     path.override_heading_atan2 = true;
 
+    // --- Check and transform each waypoint if in UTM frame ---
     for (auto point : wayp.array)
     {
+      std::string frame_id = wayp.header.frame_id;
+
+      if (frame_id == "/uav1/utm_origin")
+      {
+        try
+        {
+          geometry_msgs::msg::TransformStamped transformStamped =
+              tf_buffer_->lookupTransform("uav1/world_origin", "uav1/utm_origin", tf2::TimePointZero);
+
+          geometry_msgs::msg::PoseStamped pose_in, pose_out;
+          pose_in.header.frame_id = frame_id;
+          pose_in.pose.position = point.position;
+
+          tf2::doTransform(pose_in, pose_out, transformStamped);
+
+          // Replace with transformed coordinates
+          point.position = pose_out.pose.position;
+
+          frame_id = "uav1/world_origin";
+
+          RCLCPP_DEBUG(get_logger(),
+                       "Transformed waypoint from UTM to World: X: %.3f, Y: %.3f, Z: %.3f",
+                       point.position.x, point.position.y, point.position.z);
+        }
+        catch (const tf2::TransformException &ex)
+        {
+          RCLCPP_WARN(get_logger(), "Transform failed in GetPathFromWaypoints: %s", ex.what());
+        }
+      }
+
       path.points.push_back(point);
     }
+
+    path.header.frame_id = "uav1/world_origin";
+    path.header.stamp = this->now();
+
+    RCLCPP_INFO(get_logger(),
+                "Generated path with %zu points in frame: %s",
+                path.points.size(), path.header.frame_id.c_str());
+
     return path;
-  };
+  }
   //}
 }
 
