@@ -1,14 +1,25 @@
-#!/bin/sh
-# fly_to_point.sh
+##!/bin/bash
+# fly_to_point_utm.sh
 # Publish a ReferenceStamped to /fly_to_waypoint once
 
+source uav_origin_offset.sh
+
+#Default is 3m in Z
+BASE_X=446372.200
+BASE_Y=5467988.960
+BASE_Z=342.834
+
+X=$(echo "$BASE_X + $X_OFFSET" | bc)
+Y=$(echo "$BASE_Y + $Y_OFFSET" | bc)
+Z=$(echo "$BASE_Z + $HEIGHT_OFFSET" | bc)
+
 ros2 topic pub --once /fly_to_waypoint mrs_msgs/msg/ReferenceStamped \
-'header: 
+"header: 
   stamp: 
     sec: 0
     nanosec: 0
-  frame_id: "/uav1/utm_origin" 
+  frame_id: "uav1/utm_origin" 
 reference: 
-  position: {x: 446372.200, y: 5467988.960, z: 342.834}
-  heading: 0'
+  position: {x: $X, y: $Y, z: $Z}
+  heading: 0"
 
