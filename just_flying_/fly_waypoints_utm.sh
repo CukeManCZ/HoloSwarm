@@ -9,7 +9,7 @@ source uav_origin_offset.sh
 # Default is 3m in Z
 BASE_X=446372.200
 BASE_Y=5467988.960
-BASE_Z=342.834
+BASE_Z=472.9
 
 # Compute offsets
 X=$(printf "%.3f" "$(echo "$BASE_X + $X_OFFSET" | bc -l)")
@@ -54,7 +54,7 @@ header:
   stamp:
     sec: 0
     nanosec: 0
-  frame_id: 'uav1/utm_origin'
+  frame_id: 'uav8/utm_origin'
 array:
   - position: {x: $X1, y: $Y1, z: $Z1}
     heading: 0.0

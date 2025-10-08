@@ -168,7 +168,6 @@ namespace single_uav
       RCLCPP_INFO_STREAM(get_logger(), "Successful transform Pos: X: " << request->reference.position.x << " Y: " << request->reference.position.y << " Z: " << request->reference.position.z);
     }
     
-
     if(cli_sendRef_->service_is_ready())
     {
       cli_sendRef_->async_send_request(request, [&](const rclcpp::Client<mrs_msgs::srv::ReferenceStampedSrv>::SharedFuture fut)
@@ -481,7 +480,7 @@ namespace single_uav
         }
       }
 
-      path.points.push_back(point);
+     path.points.push_back(point);
     }
 
     path.header.frame_id = uav_name + "/world_origin";

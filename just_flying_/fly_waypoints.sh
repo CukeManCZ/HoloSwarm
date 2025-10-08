@@ -53,7 +53,7 @@ header:
   stamp:
     sec: 0
     nanosec: 0
-  frame_id: 'uav1/world_origin'
+  frame_id: 'uav8/world_origin'
 array:
   - position: {x: $X1, y: $Y1, z: $Z1}
     heading: 0.0

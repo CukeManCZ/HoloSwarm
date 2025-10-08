@@ -7,7 +7,7 @@ source uav_origin_offset.sh
 #Default is 3m in Z
 BASE_X=446372.200
 BASE_Y=5467988.960
-BASE_Z=342.834
+BASE_Z=472.9
 
 X=$(echo "$BASE_X + $X_OFFSET" | bc)
 Y=$(echo "$BASE_Y + $Y_OFFSET" | bc)
@@ -18,7 +18,7 @@ ros2 topic pub --once /fly_to_waypoint mrs_msgs/msg/ReferenceStamped \
   stamp: 
     sec: 0
     nanosec: 0
-  frame_id: "uav1/utm_origin" 
+  frame_id: "uav8/utm_origin" 
 reference: 
   position: {x: $X, y: $Y, z: $Z}
   heading: 0"
