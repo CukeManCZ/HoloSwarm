@@ -77,7 +77,6 @@ namespace single_uav
     if(IsInitialized(__func__)){
       try{
        geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform(uav_name + "/utm_origin", msg->header.frame_id, tf2::TimePointZero);
-
         geometry_msgs::msg::PoseStamped pose_in, pose_out;
         pose_in.header = msg->header;
         pose_in.pose = msg->pose.pose;
@@ -150,8 +149,7 @@ namespace single_uav
 
     if(request->header.frame_id == uav_name + "/utm_origin"){
       try{
-       geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform(uav_name + "/world_origin", uav_name + "/utm_origin", tf2::TimePointZero);
-  
+       geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform(uav_name + "/world_origin", uav_name + "/utm_origin", tf2::TimePointZero); 
         geometry_msgs::msg::PoseStamped pose_in, pose_out;
         pose_in.header = request->header;
         pose_in.pose.position = request->reference.position;
@@ -500,3 +498,4 @@ namespace single_uav
 
 #include <rclcpp_components/register_node_macro.hpp>
 RCLCPP_COMPONENTS_REGISTER_NODE(single_uav::SingleUAV);
+

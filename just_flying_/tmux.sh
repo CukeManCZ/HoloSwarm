@@ -58,7 +58,7 @@ input=(
   'fly_to_waypoint' './fly_waypoints.sh'
   'fly_to_point_utm' './fly_to_point_utm.sh'
   'fly_to_waypoint_utm' './fly_waypoints_utm.sh' 
-)
+ )
 
 # the name of the window to focus after start
 init_window="Status"

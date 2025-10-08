@@ -21,3 +21,4 @@ ros2 topic pub --once /fly_to_waypoint mrs_msgs/msg/ReferenceStamped \
 reference: 
   position: {x: $X, y: $Y, z: $Z}
   heading: 0.0"
+
