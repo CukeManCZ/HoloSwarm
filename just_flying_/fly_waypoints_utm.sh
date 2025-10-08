@@ -8,7 +8,7 @@ ros2 topic pub --once /fly_through_waypoints mrs_msgs/msg/ReferenceArray \
   stamp: 
     sec: 0
     nanosec: 0
-  frame_id: "/uav1/utm_origin" 
+  frame_id: "/uav8/utm_origin" 
 array: 
   - position: {x: 446372.200, y: 5467988.960, z: 342.834}
     heading: 0.0

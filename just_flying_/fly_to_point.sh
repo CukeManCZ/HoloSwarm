@@ -9,5 +9,5 @@ ros2 topic pub --once /fly_to_waypoint mrs_msgs/msg/ReferenceStamped \
     nanosec: 0
   frame_id: "" 
 reference: 
-  position: {x: 0.0, y: 0.0, z: 3.0}
+  position: {x: -60.0, y: 0.0, z: 3.0}
   heading: 0.0'

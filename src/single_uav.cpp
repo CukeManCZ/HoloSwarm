@@ -76,7 +76,7 @@ namespace single_uav
   void SingleUAV::SubOdomCallback(const nav_msgs::msg::Odometry::ConstSharedPtr &msg){
     if(IsInitialized(__func__)){
       try{
-       geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform("uav1/utm_origin", msg->header.frame_id, tf2::TimePointZero);
+       geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform("uav8/utm_origin", msg->header.frame_id, tf2::TimePointZero);
 
         geometry_msgs::msg::PoseStamped pose_in, pose_out;
         pose_in.header = msg->header;
@@ -86,7 +86,7 @@ namespace single_uav
 
         nav_msgs::msg::Odometry odom_out = *msg;
         odom_out.header.stamp = this->now();
-        odom_out.header.frame_id = "uav1/utm_origin";
+        odom_out.header.frame_id = "uav8/utm_origin";
         odom_out.pose.pose = pose_out.pose;
 
         latest_Odom_ = odom_out;
@@ -108,7 +108,7 @@ namespace single_uav
     {
       try{
         if(msg->markers.size() > 0){
-          geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform("uav1/utm_origin", "uav1/world_origin", tf2::TimePointZero);
+          geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform("uav8/utm_origin", "uav8/world_origin", tf2::TimePointZero);
   
           visualization_msgs::msg::MarkerArray markerArray = *msg;
 
@@ -120,7 +120,7 @@ namespace single_uav
             tf2::doTransform(pose_in, pose_out, transformStamped);
 
             std_msgs::msg::Header header = markerArray.markers[i].header;
-            header.frame_id = "uav1/utm_origin";  
+            header.frame_id = "uav8/utm_origin";  
             markerArray.markers[i].header = header;
             markerArray.markers[i].pose = pose_out.pose;
           }
@@ -148,9 +148,9 @@ namespace single_uav
     request->reference = ref.reference;
     request->header = ref.header;
 
-    if(request->header.frame_id == "/uav1/utm_origin"){
+    if(request->header.frame_id == "/uav8/utm_origin"){
       try{
-       geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform("uav1/world_origin", "uav1/utm_origin", tf2::TimePointZero);
+       geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform("uav8/world_origin", "uav8/utm_origin", tf2::TimePointZero);
   
         geometry_msgs::msg::PoseStamped pose_in, pose_out;
         pose_in.header = request->header;
@@ -159,7 +159,7 @@ namespace single_uav
         tf2::doTransform(pose_in, pose_out, transformStamped);
 
         request->header.stamp = this->now();
-        request->header.frame_id = "uav1/world_origin";
+        request->header.frame_id = "uav8/world_origin";
         request->reference.position = pose_out.pose.position;
         RCLCPP_INFO(get_logger(), "Sended reference transformed");
       }
@@ -455,12 +455,12 @@ namespace single_uav
     {
       std::string frame_id = wayp.header.frame_id;
 
-      if (frame_id == "/uav1/utm_origin")
+      if (frame_id == "/uav8/utm_origin")
       {
         try
         {
           geometry_msgs::msg::TransformStamped transformStamped =
-              tf_buffer_->lookupTransform("uav1/world_origin", "uav1/utm_origin", tf2::TimePointZero);
+              tf_buffer_->lookupTransform("uav8/world_origin", "uav8/utm_origin", tf2::TimePointZero);
 
           geometry_msgs::msg::PoseStamped pose_in, pose_out;
           pose_in.header.frame_id = frame_id;
@@ -471,7 +471,7 @@ namespace single_uav
           // Replace with transformed coordinates
           point.position = pose_out.pose.position;
 
-          frame_id = "uav1/world_origin";
+          frame_id = "uav8/world_origin";
 
           RCLCPP_DEBUG(get_logger(),
                        "Transformed waypoint from UTM to World: X: %.3f, Y: %.3f, Z: %.3f",
@@ -486,7 +486,7 @@ namespace single_uav
       path.points.push_back(point);
     }
 
-    path.header.frame_id = "uav1/world_origin";
+    path.header.frame_id = "uav8/world_origin";
     path.header.stamp = this->now();
 
     RCLCPP_INFO(get_logger(),
@@ -500,3 +500,4 @@ namespace single_uav
 
 #include <rclcpp_components/register_node_macro.hpp>
 RCLCPP_COMPONENTS_REGISTER_NODE(single_uav::SingleUAV);
+

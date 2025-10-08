@@ -7,8 +7,8 @@ ros2 topic pub --once /fly_to_waypoint mrs_msgs/msg/ReferenceStamped \
   stamp: 
     sec: 0
     nanosec: 0
-  frame_id: "/uav1/utm_origin" 
+  frame_id: "/uav8/utm_origin" 
 reference: 
-  position: {x: 446372.200, y: 5467988.960, z: 342.834}
+  position: {x: 446312.200, y: 5467988.960, z: 345.834}
   heading: 0'
 
