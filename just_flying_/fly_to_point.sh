@@ -17,7 +17,7 @@ ros2 topic pub --once /fly_to_waypoint mrs_msgs/msg/ReferenceStamped \
   stamp: 
     sec: 0
     nanosec: 0
-  frame_id: "uav1/world_origin" 
+  frame_id: "uav8/world_origin" 
 reference: 
   position: {x: $X, y: $Y, z: $Z}
   heading: 0.0"

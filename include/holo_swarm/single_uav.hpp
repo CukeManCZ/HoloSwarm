@@ -39,7 +39,8 @@ namespace single_uav
   private:
     rclcpp::Node::SharedPtr node_;
     std::atomic<bool> is_initialized_ = false;
-    std::string uav_name = "uav1";
+    std::string uav_name = "uav8";
+    float uav_height = 4.0;
 
     // Timers //{
     rclcpp::TimerBase::SharedPtr timer_initialization_;
