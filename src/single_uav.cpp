@@ -77,6 +77,7 @@ namespace single_uav
     if(IsInitialized(__func__)){
       try{
        geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform(uav_name + "/utm_origin", msg->header.frame_id, tf2::TimePointZero);
+
         geometry_msgs::msg::PoseStamped pose_in, pose_out;
         pose_in.header = msg->header;
         pose_in.pose = msg->pose.pose;
@@ -98,15 +99,53 @@ namespace single_uav
 
   void SingleUAV::SubPosesCallback(const geometry_msgs::msg::PoseArray::ConstSharedPtr &msg){
     if(IsInitialized(__func__)){
+      /*
+        try{ 
+          geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform(uav_name + "/world_origin", msg->header.frame_id, tf2::TimePointZero);
+  
+          geometry_msgs::msg::PoseArray poseArray = *msg;
+
+          for(size_t i = 0; i < poseArray.poses.size(); ++i){
+            geometry_msgs::msg::PoseStamped pose_in, pose_out;
+            pose_in.header = msg->header;
+            pose_in.pose = poseArray.poses[i];
+
+            tf2::doTransform(pose_in, pose_out, transformStamped);
+
+            poseArray.poses[i].set__position(pose_out.pose.position);
+          } 
+
+            std_msgs::msg::Header header = poseArray.header;
+            header.frame_id = uav_name + "/world_origin";
+            poseArray.header = header;
+
+            latest_Poses_ = poseArray;
+      }
+      catch (const tf2::TransformException& ex){
+        RCLCPP_WARN(get_logger(), "Transform failed: %s", ex.what());
+      }*/
+
+     latest_Poses_ = *msg;
+     /* 
       latest_Poses_ = *msg;
+      for(auto pose : latest_Poses_.poses){
+        double old_x = pose.position.x;
+        double old_y = pose.position.y;
+      
+        pose.position.set__x(old_y);
+        pose.position.set__y(old_x);
+      }
+      */
     }
   }
   
   void SingleUAV::SubBoundariesCallback(const visualization_msgs::msg::MarkerArray::ConstSharedPtr & msg){
     if(IsInitialized(__func__))
     {
+      /*
       try{
         if(msg->markers.size() > 0){
+        
           geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform(uav_name + "/utm_origin", uav_name + "/world_origin", tf2::TimePointZero);
   
           visualization_msgs::msg::MarkerArray markerArray = *msg;
@@ -122,15 +161,18 @@ namespace single_uav
             header.frame_id = uav_name + "/utm_origin";  
             markerArray.markers[i].header = header;
             markerArray.markers[i].pose = pose_out.pose;
-          }
+          } 
 
-          latest_Boundaries_ = markerArray; 
+           latest_Boundaries_ = *msg; 
         }
 
       }
       catch (const tf2::TransformException& ex){
         RCLCPP_WARN(get_logger(), "Transform failed: %s", ex.what());
       }
+      */
+
+      latest_Boundaries_ = *msg; 
     }
   }
 
@@ -149,7 +191,8 @@ namespace single_uav
 
     if(request->header.frame_id == uav_name + "/utm_origin"){
       try{
-       geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform(uav_name + "/world_origin", uav_name + "/utm_origin", tf2::TimePointZero); 
+       geometry_msgs::msg::TransformStamped transformStamped = tf_buffer_->lookupTransform(uav_name + "/world_origin", uav_name + "/utm_origin", tf2::TimePointZero);
+  
         geometry_msgs::msg::PoseStamped pose_in, pose_out;
         pose_in.header = request->header;
         pose_in.pose.position = request->reference.position;
@@ -498,4 +541,3 @@ namespace single_uav
 
 #include <rclcpp_components/register_node_macro.hpp>
 RCLCPP_COMPONENTS_REGISTER_NODE(single_uav::SingleUAV);
-
